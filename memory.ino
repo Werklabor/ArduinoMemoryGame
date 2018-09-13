@@ -79,22 +79,30 @@ void setup(){
   initializeCards();
 }
 
-void reset(){
+void reset(int x, int y){
   IBridge_LCD5110_clear();
-  IBridge_LCD5110_set_XY(0, 0);
+  IBridge_LCD5110_set_XY(x, y);
 }
 
 int buttonToCardMap[] = {15, 11, 7, 3, 14, 10, 6, 2, 13, 9, 5, 1, 12, 8, 4, 0};
 
 void displayCards(int button){
   for(int i = 0; i < cardSize; i++){
-    IBridge_LCD5110_set_XY((i % sideWidth) * 2, i / sideWidth);
-    // if(button == i){
+
+    // IBridge_LCD5110_set_XY((i % sideWidth) * 2, i / sideWidth);
+		if(i % 4 == 0){
+			IBridge_LCD5110_write_char(' ');
+		}
+		IBridge_LCD5110_write_char('[');
 		if(cardsState[i] > 0){
       IBridge_LCD5110_write_char(cards[i]);
     }else{
-      IBridge_LCD5110_write_char('*');
+      IBridge_LCD5110_write_char(' ');
     }
+		IBridge_LCD5110_write_char(']');
+		if(i % 4 == 3){
+			IBridge_LCD5110_write_char(' ');
+		}
   }
 }
 void displayWelcomeScreen(){
@@ -107,6 +115,8 @@ void displayWelcomeScreen(){
 	IBridge_LCD5110_write_string(" to start!    ");
 }
 
+int currentState = -2; // -1 = Welcome Screen;
+
 boolean initialized = false;
 
 void loop()
@@ -116,10 +126,12 @@ void loop()
 
   while(1){
     button = IBridge_Read_Key();
-    reset();
-
-		if(!initialized){
-			displayWelcomeScreen();
+    if(!initialized){
+			if(currentState != -1){
+				reset(0, 0);
+				displayWelcomeScreen();
+				currentState = -1;
+			}
 			if(button != 0){
 				randomSeed(millis());
 				randomizeCards();
@@ -127,18 +139,26 @@ void loop()
 			}
 		}else{
 			if(button == 0){
-	      displayCards(-1);
+				if(currentState != button){
+					reset(0, 1);
+					displayCards(-1);
+					currentState = button;
+				}
 	    }else{
 				card = buttonToCardMap[button - 1];
 
-				flipCard(card);
-				displayCards(card);
+				if(currentState != button){
+					reset(0, 1);
+					flipCard(card);
+					displayCards(card);
+					currentState = button;
+				}
 
 				if(countTemporarilyFaceUpCards() >= 2){
 					if(areTemporarilyFaceUpCardsEqual()){
 						setTemporarilyFaceUpCardsState(FACE_UP_PERMANENTLY);
 					}else{
-						delay(2 * 1000);
+						delay(1 * 1000);
 						setTemporarilyFaceUpCardsState(FACE_DOWN);
 					}
 				}
