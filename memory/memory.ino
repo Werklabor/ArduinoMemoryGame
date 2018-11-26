@@ -33,8 +33,9 @@ int buttonToCardMap[] = {15, 11, 7, 3, 14, 10, 6, 2, 13, 9, 5, 1, 12, 8, 4, 0};
 void setup(){
   IBridge_init();
   IBridge_LCD5110_clear();
-
   initializeCards();
+  Serial.begin(9600);
+  while (! Serial); // Wait untilSerial is ready - Leonardo
 }
 
 void initializeCards(){
@@ -84,8 +85,8 @@ void setTemporarilyFaceUpCardsState(int state){
 
 void flipCard(int card){
   if(cardsState[card] != FACE_UP_PERMANENTLY) {
+    Serial.write(cards[card]);
     cardsState[card] = FACE_UP_TEMPORARILY;
-    playSound(card);
   }
 }
 
@@ -138,7 +139,8 @@ void loop()
   unsigned char card = 0;
 
   while(1){
-    button = IBridge_Read_Key();//Button values range from 1-16, 0 is no button pressed
+    button = IBridge_Read_Key(); //Button values range from 1-16, 0 is no button pressed
+
     if(!initialized){
       if(currentState != -1){
         reset(0, 0);
@@ -150,14 +152,14 @@ void loop()
         randomizeCards();
         initialized = true;
       }
-    }else{
+    } else {
       if(button == 0){
         if(currentState != button){
           reset(0, 1);
           displayCards();
           currentState = button;
         }
-      }else{
+      } else {
         card = buttonToCardMap[button - 1];
 
         if(currentState != button){
