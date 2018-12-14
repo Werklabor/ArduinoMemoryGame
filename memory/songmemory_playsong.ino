@@ -21,7 +21,7 @@ void playSong3(){
   char *song = "MissionImp:d=16,o=6,b=95:32d,32d#,32d,32d#,32d,32d#,32d,32d#,32d,32d,32d#,32e,32f,32f#,32g,g";
   play_rtttl(song);
   }
-  
+
 void playSong4(){
   char *song = "TakeOnMe:d=4,o=4,b=160:8f#5,8f#5,8f#5,8d5,8p,8b,8p,8e5,8p,8e5,8p,8e5,8g#5,8g#5,8a5,8b5,8a5,8a5,8a5,8e5,8p,8d5,8p,8f#5,8p,8f#5,8p,8f#5,8e5,8e5,8f#5,8e5,8f#5,8f#5,8f#5,8d5,8p,8b,8p,8e5,8p,8e5,8p,8e5,8g#5,8g#5,8a5,8b5,8a5,8a5,8a5,8e5,8p,8d5,8p,8f#5,8p,8f#5,8p,8f#5,8e5,8e5";
   play_rtttl(song);  }
@@ -76,7 +76,6 @@ int notes[] = { 0,
 
 void play_rtttl(char *p)
 {
-  // Absolutely no error checking in here
 
   byte default_dur = 4;
   byte default_oct = 6;
@@ -149,7 +148,7 @@ void play_rtttl(char *p)
     {
       num = (num * 10) + (*p++ - '0');
     }
-    
+
     if(num) duration = wholenote / num;
     else duration = wholenote / default_dur;  // we will need to check if we are a dotted note after
 
@@ -198,7 +197,7 @@ void play_rtttl(char *p)
       duration += duration/2;
       p++;
     }
-  
+
     // now, get scale
     if(isdigit(*p))
     {
@@ -238,14 +237,14 @@ void play_rtttl(char *p)
   }
 }
 
-  
+
 void setup()
 {
   Serial.begin(9600);
 
   pinMode(buzzerPin, OUTPUT);
 }
- 
+
 void loop()
 {
   if (Serial.available() > 0) {
@@ -267,7 +266,7 @@ void loop()
     break;
     case '!':   playSong7();
     break;
-//    case '^':   playSong8();
+    case '^':   playSong8();
     break;
     default:;
     break;

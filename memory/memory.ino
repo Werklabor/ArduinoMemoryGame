@@ -1,10 +1,10 @@
 /* Initialize variables */
-int cardTypeSize = 8;
-int cardSize = cardTypeSize * 2;
+const int cardTypeSize = 8;
+const int cardSize = cardTypeSize * 2;
 
-int FACE_DOWN = 0;
-int FACE_UP_TEMPORARILY = 1;
-int FACE_UP_PERMANENTLY = 2;
+const int FACE_DOWN = 0;
+const int FACE_UP_TEMPORARILY = 1;
+const int FACE_UP_PERMANENTLY = 2;
 
 boolean initialized = false;
 
